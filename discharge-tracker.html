@@ -838,12 +838,7 @@ tr:nth-child(even) td{background:#FAFBFC}
   <table><thead><tr><th>ชื่อ-สกุล</th><th>HN</th><th>Ward/ห้อง</th><th>แพทย์</th><th>เวลาจำหน่าย</th><th>สถานะ</th><th>Progress</th></tr></thead>
   <tbody>${done.map(ptRow).join('')}</tbody></table>`:''}
   <div class="foot">Bangkok Hospital Udon | Discharge Tracking System | ${todayLabel}</div>
-</div>  <script>
-    if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('/bhu-discharge/sw.js');
-    }
-  </script>
-</body></html>`);
+</div></body></html>`);
   w.document.close();
 }
 // Dashboard
@@ -1586,4 +1581,10 @@ ld();ldWards();ldLog();ldStaff();demo();render();renderWardSelect();clock();setI
 })();
 </script>
 </body>
+
+  <script>
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('/bhu-discharge/sw.js');
+    }
+  </script>
 </html>
