@@ -1310,7 +1310,7 @@ async function doNotify(){
   closeModal('ntfM');
   for(const t of targets){
     try{
-      await fetch(cfg.wh,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({group:t.group,groupName:t.name,message:pendingNtf.msg})});
+      await fetch(cfg.wh,{method:'POST',body:JSON.stringify({group:t.group,groupName:t.name,message:pendingNtf.msg})});
     }catch(e){console.warn('Push failed:',e)}
   }
   toast('Sent',`Notified ${targets.map(t=>t.name).join(', ')}`,'i');
