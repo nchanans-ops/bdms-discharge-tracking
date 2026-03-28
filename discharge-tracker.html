@@ -1298,6 +1298,28 @@ function manualNtf(){
   openModal('ntfM');
 }
 
+
+async function sendToAllGroups(){
+  if(!pendingNtf)return;
+  if(!cfg.wh){toast('Info','No webhook configured','w');pendingNtf=null;return;}
+  const groups=[
+    {id:'g1',name:'หน่วยพยาบาล'},
+    {id:'g2',name:'แผนกเภสัชกรรม'},
+    {id:'g3',name:'แผนกประกันสุขภาพ'},
+    {id:'g4',name:'แผนกการเงิน'}
+  ];
+  const targets=groups.filter(g=>cfg[g.id]);
+  if(!targets.length){toast('Info','No groups configured','w');pendingNtf=null;return;}
+  try{
+    for(const t of targets){
+      await fetch(cfg.wh,{method:'POST',body:JSON.stringify({group:cfg[t.id],groupName:t.name,message:pendingNtf.msg})});
+    }
+    toast('Sent',`Notified ${targets.map(t=>t.name).join(', ')}`,'s');
+    addToLog(pendingNtf.msg, targets.map(t=>t.name).join(', '));
+  }catch(e){toast('Error',e.message,'e');}
+  pendingNtf=null;
+}
+
 async function doNotify(){
   if(!pendingNtf)return;
   const targets=[];
@@ -1365,13 +1387,7 @@ function compAll(){
   sv();render();
   // Show notify for discharge complete
   pendingNtf={msg:`🏥 Bangkok Hospital Udon\n${'─'.repeat(28)}\n🎉 Discharge เสร็จสิ้น\n\n👤 ${p.name}\n   HN: ${p.hn}\n   Ward: ${p.ward} Room: ${p.room||'-'}\n   แพทย์: ${p.doctor||'-'}\n\n✅ ครบทุก Step (${pr.t}/${pr.t})\n${'─'.repeat(28)}`};
-  document.getElementById('ntfTxt').textContent=`Discharge complete: ${p.name}`;
-  document.getElementById('ng1').checked=true;
-  document.getElementById('ng2').checked=true;
-  document.getElementById('ng3').checked=true;
-  document.getElementById('ng4').checked=true;
-  document.querySelectorAll('.ng-item').forEach(el=>el.classList.add('checked'));
-  openModal('ntfM');
+  sendToAllGroups();
 }
 
 function saveCfg(){
