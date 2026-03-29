@@ -1456,15 +1456,27 @@ function togI(pid,sid,iid){
   const pr=prg(p);
   p.status=pr.d===0?'pending':pr.d===pr.t?'completed':'active';
   sv();render();
-  // If checked (not unchecked), show notify popup
-  if(i.ck){
-    pendingNtf={msg:(()=>{
-      const now=new Date();
-      const dt=now.toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'})+' '+now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})+' น.';
-      return `BANGKOK HOSPITAL UDON\nระบบ Discharge Tracking\n${'─'.repeat(9)}\nประเภท   : Step เสร็จสิ้น\nวันเวลา  : ${dt}\n${'─'.repeat(9)}\nชื่อ-สกุล    : ${p.name}\nHN           : ${p.hn}\nWard/ห้อง    : ${p.ward} / ${p.room||'-'}\nแพทย์ผู้ดูแล  : ${p.doctor||'-'}\n${'─'.repeat(9)}\nStep : ${iid} ${i.th}\nความคืบหน้า : ${pr.pct}% (${pr.d}/${pr.t})\n${'─'.repeat(9)}`;
-    })()};
-    document.getElementById('ntfTxt').textContent=`Step ${iid}: ${i.th}`;
-    // Reset checkboxes - default nurse checked
+  // ส่ง LINE เฉพาะเมื่อ section นี้ครบทุก item (ไม่ใช่ uncheck)
+  const sec=sp(s);
+  if(i.ck && sec.dn){
+    const now=new Date();
+    const dt=now.toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'})+' '+now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})+' น.';
+    pendingNtf={msg:`BANGKOK HOSPITAL UDON
+ระบบ Discharge Tracking
+${'─'.repeat(9)}
+ประเภท   : หัวข้อเสร็จสิ้น
+วันเวลา  : ${dt}
+${'─'.repeat(9)}
+ชื่อ-สกุล    : ${p.name}
+HN           : ${p.hn}
+Ward/ห้อง    : ${p.ward} / ${p.room||'-'}
+แพทย์ผู้ดูแล  : ${p.doctor||'-'}
+${'─'.repeat(9)}
+หัวข้อ ${s.id}: ${s.th}
+สถานะ : ✅ เสร็จสิ้นทุกรายการ (${sec.t}/${sec.t})
+ความคืบหน้ารวม : ${pr.pct}% (${pr.d}/${pr.t})
+${'─'.repeat(9)}`};
+    document.getElementById('ntfTxt').textContent=`หัวข้อ ${s.id}: ${s.th} — เสร็จสิ้นทุกรายการ`;
     document.getElementById('ng1').checked=false;
     document.getElementById('ng2').checked=false;
     document.getElementById('ng3').checked=false;
