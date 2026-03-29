@@ -271,9 +271,8 @@ function doLogin(){
       }
       if(!users.length){
         users=[
-          {id:'u1',firstname:'สมหญิง',lastname:'ใจดี',username:'nurse01',password:'123456',role:'nurse',ward:'IPD-10A',status:'active'},
-          {id:'u2',firstname:'วิไล',lastname:'รักงาน',username:'nurse02',password:'123456',role:'nurse',ward:'IPD-7B',status:'active'},
-          {id:'u3',firstname:'ผู้ดูแล',lastname:'ระบบ',username:'admin',password:'admin123',role:'admin',ward:'-',status:'active'},
+          {id:'u1',firstname:'นุ้กแอ',lastname:'',username:'nookae',password:'nookae1234',role:'nurse',ward:'IPD-10A',status:'active'},
+          {id:'u3',firstname:'BDMS',lastname:'Admin',username:'bdmsadmin',password:'bdmsadminsupport',role:'admin',ward:'-',status:'active'},
         ];
         localStorage.setItem('bhu_users',JSON.stringify(users));
         // seed Firebase
