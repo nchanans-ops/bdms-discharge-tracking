@@ -640,7 +640,7 @@ const GROUPS=[
   {key:'g4',name:'แผนกการเงิน',tag:'การเงิน',cls:'t-fin'}
 ];
 
-let pts=[],sel=null,af='',cfg={wh:'',g1:'',g2:'',g3:'',g4:''};
+let pts=[],sel=null,af='',cfg={wh:'',g1:'',g2:'',g3:'',g4:''},openSecs=new Set();
 let wards=['IPD-10A','IPD-10B','IPD-12A','ICU-3','Ward-5'];
 let ntfLog=[];
 let staffList=['พยาบาล ก','พยาบาล ข','พยาบาล ค'];
@@ -1454,7 +1454,14 @@ function saveAssignee(pid,sid,iid,val){
 function showE(){document.getElementById('mP').innerHTML=`<div class="r-empty"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--f2)" stroke-width="1.5"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg><p>Select patient</p></div>`}
 function selP(id){sel=id;render();if(window.innerWidth<768)closeMobPanel();}
 function filt(el){document.querySelectorAll('.l-tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');af=el.dataset.f;render()}
-function togS(h){h.nextElementSibling.classList.toggle('op');h.querySelector('.cl-ar').classList.toggle('op')}
+function togS(h){
+  const bd=h.nextElementSibling;
+  const ar=h.querySelector('.cl-ar');
+  bd.classList.toggle('op');
+  ar.classList.toggle('op');
+  const sec=h.closest('.cl-s');
+  if(sec){if(bd.classList.contains('op'))openSecs.add(sec.id);else openSecs.delete(sec.id);}
+}
 function goSec(id){const e=document.getElementById('s-'+id);if(e){e.scrollIntoView({behavior:'smooth',block:'start'});const b=e.querySelector('.cl-bd'),a=e.querySelector('.cl-ar');if(!b.classList.contains('op')){b.classList.add('op');a.classList.add('op')}}}
 
 function togI(pid,sid,iid){
