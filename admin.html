@@ -260,7 +260,43 @@ tbody tr:hover td{background:var(--navy-2xl)}
 /* ── LOG ── */
 .log-chip{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:4px}
 
-@media(max-width:860px){.sidebar{display:none}.stat-grid{grid-template-columns:1fr 1fr}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:860px){
+  .sidebar{display:none}
+  .main{padding:16px 14px}
+  .stat-grid{grid-template-columns:1fr 1fr !important}
+  .pg-title{font-size:17px}
+  .pg-hdr-row{flex-direction:column;align-items:flex-start;gap:10px}
+  .pg-hdr-row .btn{width:100%}
+}
+@media(max-width:540px){
+  .stat-grid{grid-template-columns:1fr !important}
+  .fg-row{grid-template-columns:1fr !important}
+  .tb-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{min-width:520px}
+  .top-bar{padding:0 10px;gap:8px}
+  .top-bar .top-title{font-size:13px}
+}
+
+/* ── MOBILE NAV ── */
+.mob-nav{display:none}
+@media(max-width:860px){
+  .mob-nav{
+    display:flex;position:fixed;bottom:0;left:0;right:0;
+    background:var(--white);border-top:1px solid var(--f2);
+    z-index:100;padding:6px 0 calc(6px + env(safe-area-inset-bottom));
+  }
+  .mob-nav-item{
+    flex:1;display:flex;flex-direction:column;align-items:center;
+    gap:3px;padding:4px 0;cursor:pointer;
+    font-size:10px;font-weight:600;color:var(--f3);border:none;background:none;
+    font-family:inherit;
+  }
+  .mob-nav-item.on{color:var(--navy)}
+  .mob-nav-item svg{width:20px;height:20px}
+  body{padding-bottom:56px}
+}
 </style>
   <link rel="manifest" href="/bhu-discharge/manifest.json">
   <meta name="theme-color" content="#1B2E5C">
@@ -1093,5 +1129,38 @@ function saveAllSettings(){
       navigator.serviceWorker.register('/bhu-discharge/sw.js');
     }
   </script>
+
+<nav class="mob-nav" id="mobNav">
+  <button class="mob-nav-item on" onclick="mobGo('pgDash',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Dashboard
+  </button>
+  <button class="mob-nav-item" onclick="mobGo('pgUsers',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    ผู้ใช้งาน
+  </button>
+  <button class="mob-nav-item" onclick="mobGo('pgWards',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Ward
+  </button>
+  <button class="mob-nav-item" onclick="mobGo('pgNtf',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    แจ้งเตือน
+  </button>
+  <button class="mob-nav-item" onclick="mobGo('pgCfg',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    ตั้งค่า
+  </button>
+</nav>
+<script>
+function mobGo(pageId, btn){
+  document.querySelectorAll('.mob-nav-item').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  const pg = document.getElementById(pageId);
+  if(pg) pg.classList.add('on');
+}
+</script>
+
 </body>
 </html>
