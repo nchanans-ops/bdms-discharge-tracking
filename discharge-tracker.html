@@ -640,7 +640,7 @@ const GROUPS=[
   {key:'g4',name:'แผนกการเงิน',tag:'การเงิน',cls:'t-fin'}
 ];
 
-let pts=[],sel=null,af='',cfg={wh:'',g1:'',g2:'',g3:'',g4:''},openSecs=new Set();
+let pts=[],sel=null,af='',cfg={wh:'',g1:'',g2:'',g3:'',g4:''},openSecs=new Set(),_saving=false;
 let wards=['IPD-10A','IPD-10B','IPD-12A','ICU-3','Ward-5'];
 let ntfLog=[];
 let staffList=['พยาบาล ก','พยาบาล ข','พยาบาล ค'];
@@ -1212,13 +1212,14 @@ function ld(){
         if(data && typeof data === 'object'){
           pts=Object.values(data);
           localStorage.setItem('d4_p2',JSON.stringify(pts));
-          render();
+          if(!_saving) render();
         } else {
           // Firebase ว่าง - โหลด demo data แล้ว seed ขึ้น Firebase
           demo();
           if(pts.length){
             const {set}=window._fb;
-            set(ref(db,'bhu/patients'), pts.reduce((acc,p)=>{acc[p.id]=p;return acc},{}))
+            _saving=true;setTimeout(()=>{_saving=false;},2000);
+    set(ref(db,'bhu/patients'), pts.reduce((acc,p)=>{acc[p.id]=p;return acc},{}))
               .catch(e=>console.warn('seed',e));
           }
         }
@@ -1262,6 +1263,7 @@ function sv(){
   // sync to Firebase
   if(window._fb){
     const {db,ref,set}=window._fb;
+    _saving=true;setTimeout(()=>{_saving=false;},2000);
     set(ref(db,'bhu/patients'), pts.reduce((acc,p)=>{acc[p.id]=p;return acc},{})).catch(e=>console.warn('FB write pts',e));
     set(ref(db,'bhu/config'), cfg).catch(e=>console.warn('FB write cfg',e));
   }
