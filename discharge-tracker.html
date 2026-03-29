@@ -666,7 +666,7 @@ function svLog(){
 }
 function ldLog(){
   try{ntfLog=JSON.parse(localStorage.getItem('bhu_log')||'[]')}catch(e){}
-}}
+}
 function svStaff(){
   localStorage.setItem('bhu_staff',JSON.stringify(staffList));
   if(window._fb){
@@ -1178,7 +1178,6 @@ function ld(){
   function setupFbListeners(){
     if(!window._fb){ setTimeout(setupFbListeners, 100); return; }
     const {db,ref,onValue}=window._fb;
-    {
     // patients realtime
     onValue(ref(db,'bhu/patients'), snap=>{
       try{
@@ -1226,7 +1225,7 @@ function ld(){
         dot.title='Realtime: ออฟไลน์';
       }
     });
-  } }
+  }
   setupFbListeners();
 }
 function sv(){
