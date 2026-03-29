@@ -1227,20 +1227,33 @@ function renderStats(){
 let sysConfig = JSON.parse(localStorage.getItem('bhu_sysconfig')||'{}');
 
 function loadSettings(){
-  const cfg = JSON.parse(localStorage.getItem('d4_c')||'{}');
   const el = id => document.getElementById(id);
-  if(el('cfgWh')) el('cfgWh').value = cfg.wh||'';
-  if(el('cfgG1')) el('cfgG1').value = cfg.g1||'';
-  if(el('cfgG2')) el('cfgG2').value = cfg.g2||'';
-  if(el('cfgG3')) el('cfgG3').value = cfg.g3||'';
-  if(el('cfgG4')) el('cfgG4').value = cfg.g4||'';
-  if(el('cfgMinPw')) el('cfgMinPw').value = sysConfig.minPw||'6';
-  if(el('cfgSession')) el('cfgSession').value = sysConfig.session||'8';
+  function fillFields(cfg){
+    if(el('cfgWh')) el('cfgWh').value = cfg.wh||'';
+    if(el('cfgG1')) el('cfgG1').value = cfg.g1||'';
+    if(el('cfgG2')) el('cfgG2').value = cfg.g2||'';
+    if(el('cfgG3')) el('cfgG3').value = cfg.g3||'';
+    if(el('cfgG4')) el('cfgG4').value = cfg.g4||'';
+    if(el('cfgMinPw')) el('cfgMinPw').value = sysConfig.minPw||'6';
+    if(el('cfgSession')) el('cfgSession').value = sysConfig.session||'8';
+  }
+  // โหลดจาก Firebase ก่อน (ข้อมูลล่าสุด)
+  if(window._fb){
+    const {db,ref,get}=window._fb;
+    get(ref(db,'bhu/config')).then(snap=>{
+      const data=snap.val();
+      let cfg = JSON.parse(localStorage.getItem('d4_c')||'{}');
+      if(data){ cfg={...cfg,...data}; localStorage.setItem('d4_c',JSON.stringify(cfg)); }
+      fillFields(cfg);
+    }).catch(()=>{ fillFields(JSON.parse(localStorage.getItem('d4_c')||'{}')); });
+  } else {
+    fillFields(JSON.parse(localStorage.getItem('d4_c')||'{}'));
+  }
 }
 
 function saveAllSettings(){
   const el = id => document.getElementById(id);
-  // Save LINE OA config (same key as discharge-tracker)
+  // Save LINE OA config
   const cfg = JSON.parse(localStorage.getItem('d4_c')||'{}');
   cfg.wh = el('cfgWh')?el('cfgWh').value.trim():'';
   cfg.g1 = el('cfgG1')?el('cfgG1').value.trim():'';
@@ -1252,7 +1265,15 @@ function saveAllSettings(){
   sysConfig.minPw = el('cfgMinPw')?el('cfgMinPw').value:'6';
   sysConfig.session = el('cfgSession')?el('cfgSession').value:'8';
   localStorage.setItem('bhu_sysconfig', JSON.stringify(sysConfig));
-  toast('บันทึกการตั้งค่าแล้ว','ok');
+  // *** sync cfg ขึ้น Firebase ให้ทุกเครื่องได้รับ ***
+  if(window._fb){
+    const {db,ref,set}=window._fb;
+    set(ref(db,'bhu/config'), cfg)
+      .then(()=>toast('บันทึกการตั้งค่าแล้ว — ทุกเครื่องได้รับการอัปเดต','ok'))
+      .catch(e=>{console.warn('Firebase cfg save',e); toast('บันทึกการตั้งค่าแล้ว','ok');});
+  } else {
+    toast('บันทึกการตั้งค่าแล้ว','ok');
+  }
 }
 
 </script>
