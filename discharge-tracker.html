@@ -250,13 +250,11 @@ body{font-family:'TH Niramit AS',sans-serif;background:#ECEEF2;color:var(--f6);f
       });
     }
   </script>
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, set, get, onValue, push, update, remove, off }
-      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-    const FB = {
+  <!-- Firebase compat (global) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script>
+    firebase.initializeApp({
       apiKey: "AIzaSyC9u_fvXwXAAFs5OANu9AFIb0v3IA9wOvk",
       authDomain: "bdms-14b17.firebaseapp.com",
       databaseURL: "https://bdms-14b17-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -264,12 +262,21 @@ body{font-family:'TH Niramit AS',sans-serif;background:#ECEEF2;color:var(--f6);f
       storageBucket: "bdms-14b17.firebasestorage.app",
       messagingSenderId: "384494146608",
       appId: "1:384494146608:web:45e9ba808860383bc1c9f5"
+    });
+    const _db = firebase.database();
+    // helper ให้ใช้งานเหมือนเดิม
+    window._fb = {
+      db: _db,
+      ref: (db, path) => db.ref(path),
+      set: (r, v) => r.set(v),
+      get: (r) => r.get(),
+      onValue: (r, cb) => { r.on('value', cb); return ()=>r.off('value',cb); },
+      push: (r, v) => r.push(v),
+      update: (r, v) => r.update(v),
+      remove: (r) => r.remove(),
+      off: (r) => r.off()
     };
-    const app = initializeApp(FB);
-    const db  = getDatabase(app);
-
-    // expose to global scope for non-module scripts
-    window._fb = { db, ref, set, get, onValue, push, update, remove, off };
+    window._fbReady = true;
     window.dispatchEvent(new Event('fb-ready'));
   </script>
 </head>
@@ -1167,15 +1174,26 @@ function ld(){
   try{pts=JSON.parse(localStorage.getItem('d4_p2')||'[]')}catch(e){}
   try{cfg=JSON.parse(localStorage.getItem('d4_c')||JSON.stringify(cfg))}catch(e){}
   // then setup Firebase realtime listeners
-  window.addEventListener('fb-ready',()=>{
+  // รอ Firebase พร้อม แล้วค่อย setup listeners
+  function setupFbListeners(){
+    if(!window._fb){ setTimeout(setupFbListeners, 100); return; }
     const {db,ref,onValue}=window._fb;
+    {
     // patients realtime
     onValue(ref(db,'bhu/patients'), snap=>{
-      const data=snap.val();
-      if(data){
+      if(snap.exists()){
+        const data=snap.val();
         pts=Object.values(data);
         localStorage.setItem('d4_p2',JSON.stringify(pts));
         render();
+      } else {
+        // Firebase ว่าง - โหลด demo data แล้ว seed ขึ้น Firebase
+        demo();
+        if(pts.length){
+          const {set}=window._fb;
+          set(ref(db,'bhu/patients'), pts.reduce((acc,p)=>{acc[p.id]=p;return acc},{}))
+            .catch(e=>console.warn('seed',e));
+        }
       }
     });
     // config realtime
@@ -1220,7 +1238,8 @@ function ld(){
         dot.title='Realtime: ออฟไลน์';
       }
     });
-  },{once:true});
+  } }
+  setupFbListeners();
 }
 function sv(){
   // keep localStorage as offline cache

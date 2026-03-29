@@ -340,12 +340,11 @@ tbody tr:hover td{background:var(--navy-2xl)}
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="BHU Discharge">
   <link rel="apple-touch-icon" href="/bhu-discharge/icon-192.png">
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, set, get, onValue, push, update, remove }
-      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-    const FB = {
+    <!-- Firebase compat (global) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script>
+    firebase.initializeApp({
       apiKey: "AIzaSyC9u_fvXwXAAFs5OANu9AFIb0v3IA9wOvk",
       authDomain: "bdms-14b17.firebaseapp.com",
       databaseURL: "https://bdms-14b17-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -353,10 +352,20 @@ tbody tr:hover td{background:var(--navy-2xl)}
       storageBucket: "bdms-14b17.firebasestorage.app",
       messagingSenderId: "384494146608",
       appId: "1:384494146608:web:45e9ba808860383bc1c9f5"
+    });
+    const _db = firebase.database();
+    window._fb = {
+      db: _db,
+      ref: (db, path) => db.ref(path),
+      set: (r, v) => r.set(v),
+      get: (r) => r.get(),
+      onValue: (r, cb) => { r.on('value', cb); return ()=>r.off('value',cb); },
+      push: (r, v) => r.push(v),
+      update: (r, v) => r.update(v),
+      remove: (r) => r.remove(),
+      off: (r) => r.off()
     };
-    const app = initializeApp(FB);
-    const db  = getDatabase(app);
-    window._fb = { db, ref, set, get, onValue, push, update, remove };
+    window._fbReady = true;
     window.dispatchEvent(new Event('fb-ready'));
   </script>
 </head>
@@ -1007,7 +1016,9 @@ function toast(msg,type=''){
 
 document.addEventListener("DOMContentLoaded",function(){
   // Setup Firebase realtime listeners
-  window.addEventListener('fb-ready',()=>{
+  function setupFbListeners(){
+    if(!window._fb){ setTimeout(setupFbListeners,100); return; }
+    {
     const {db,ref,onValue}=window._fb;
     // users realtime
     onValue(ref(db,'bhu/users'), snap=>{
@@ -1037,7 +1048,8 @@ document.addEventListener("DOMContentLoaded",function(){
         localStorage.setItem('bhu_log',JSON.stringify(loginLog));
       }
     });
-  },{once:true});
+  } }
+  setupFbListeners();
 
   setTimeout(()=>{
     if(window.innerWidth >= 860){

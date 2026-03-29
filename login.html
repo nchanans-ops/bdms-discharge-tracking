@@ -119,12 +119,11 @@ body{font-family:'TH Niramit AS',sans-serif;min-height:100vh;display:flex;overfl
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="BHU Discharge">
   <link rel="apple-touch-icon" href="/bhu-discharge/icon-192.png">
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, get, set, push }
-      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-    const FB = {
+  <!-- Firebase compat (global) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script>
+    firebase.initializeApp({
       apiKey: "AIzaSyC9u_fvXwXAAFs5OANu9AFIb0v3IA9wOvk",
       authDomain: "bdms-14b17.firebaseapp.com",
       databaseURL: "https://bdms-14b17-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -132,10 +131,20 @@ body{font-family:'TH Niramit AS',sans-serif;min-height:100vh;display:flex;overfl
       storageBucket: "bdms-14b17.firebasestorage.app",
       messagingSenderId: "384494146608",
       appId: "1:384494146608:web:45e9ba808860383bc1c9f5"
+    });
+    const _db = firebase.database();
+    window._fb = {
+      db: _db,
+      ref: (db, path) => db.ref(path),
+      set: (r, v) => r.set(v),
+      get: (r) => r.get(),
+      onValue: (r, cb) => { r.on('value', cb); return ()=>r.off('value',cb); },
+      push: (r, v) => r.push(v),
+      update: (r, v) => r.update(v),
+      remove: (r) => r.remove(),
+      off: (r) => r.off()
     };
-    const app = initializeApp(FB);
-    const db  = getDatabase(app);
-    window._fb = { db, ref, get, set, push };
+    window._fbReady = true;
     window.dispatchEvent(new Event('fb-ready'));
   </script>
 </head>
@@ -242,6 +251,9 @@ function doLogin(){
   setTimeout(()=>{
     // ดึง users จาก Firebase ก่อน, fallback localStorage
     async function tryLogin(){
+      // รอ Firebase พร้อม
+      let waited=0;
+      while(!window._fb && waited<3000){ await new Promise(r=>setTimeout(r,100)); waited+=100; }
       let users=[];
       try{
         if(window._fb){
