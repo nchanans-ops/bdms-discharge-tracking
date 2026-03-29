@@ -229,14 +229,32 @@ function doLogin(){
 }
 
 function showLoginSuccess(role){
-  const overlay = document.getElementById('loginOverlay');
   const user = document.getElementById('inUser').value.trim();
-  document.getElementById('loginWelcome').textContent = 'ยินดีต้อนรับ ' + user + (role==='admin'?' (Admin)':'');
+  document.getElementById('ovName').textContent = user;
+  const overlay = document.getElementById('loginOverlay');
   overlay.style.display = 'flex';
+
+  setTimeout(()=>{
+    const circle = document.getElementById('ovCircle');
+    const check = document.getElementById('ovCheck');
+    circle.style.transform = 'scale(1)';
+    setTimeout(()=>check.style.strokeDashoffset='0', 450);
+    setTimeout(()=>document.getElementById('ovTxt1').style.opacity='1', 650);
+    setTimeout(()=>document.getElementById('ovTxt2').style.opacity='1', 800);
+    setTimeout(()=>{
+      document.getElementById('ovBar').style.opacity='1';
+      setTimeout(()=>{
+        const p = document.getElementById('ovProgress');
+        p.style.transition='width 1.8s ease';
+        p.style.width='100%';
+      },50);
+    },1000);
+  },100);
+
   setTimeout(()=>{
     if(role==='admin') window.location.href='admin.html';
     else window.location.href='discharge-tracker.html';
-  },1800);
+  },2800);
 }
 window.onload=()=>document.getElementById('inUser').focus();
 </script>
@@ -246,22 +264,32 @@ window.onload=()=>document.getElementById('inUser').focus();
     }
   </script>
 
+
+
 <!-- Login Success Overlay -->
-<div id="loginOverlay" style="display:none;position:fixed;inset:0;background:#1B2E5C;z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:24px">
-  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%23C41E2F'/%3E%3Cpath d='M30 50 L44 64 L70 38' stroke='white' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" style="width:72px;height:72px;animation:popIn .4s ease">
-  <div style="text-align:center">
-    <div style="color:#fff;font-size:22px;font-weight:800;font-family:'TH Niramit AS',sans-serif">เข้าสู่ระบบสำเร็จ</div>
-    <div id="loginWelcome" style="color:rgba(255,255,255,0.7);font-size:14px;margin-top:6px;font-family:'TH Niramit AS',sans-serif"></div>
-  </div>
-  <div style="display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.5);font-size:13px;font-family:'TH Niramit AS',sans-serif">
-    <div style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite"></div>
-    กำลังเข้าสู่ระบบ...
+<div id="loginOverlay" style="display:none;position:fixed;inset:0;background:#1B2E5C;z-index:9999;align-items:center;justify-content:center">
+  <div style="background:rgba(255,255,255,0.97);border-radius:20px;padding:2.5rem 2rem;width:290px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1rem">
+    <div id="ovCircle" style="width:76px;height:76px;border-radius:50%;background:#27AE60;display:flex;align-items:center;justify-content:center;transform:scale(0);transition:transform 0.45s cubic-bezier(0.34,1.56,0.64,1)">
+      <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+        <path id="ovCheck" d="M9 17 L15 23 L25 11" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="26" stroke-dashoffset="26" style="transition:stroke-dashoffset 0.4s ease 0.45s"/>
+      </svg>
+    </div>
+    <div id="ovTxt1" style="opacity:0;transition:opacity 0.4s ease 0.65s">
+      <div style="font-size:17px;font-weight:700;color:#1B2E5C;font-family:'TH Niramit AS',sans-serif">เข้าสู่ระบบสำเร็จ</div>
+      <div style="font-size:12px;color:#888;margin-top:3px;font-family:'TH Niramit AS',sans-serif">Discharge Tracking System</div>
+    </div>
+    <div id="ovTxt2" style="opacity:0;transition:opacity 0.4s ease 0.8s;padding:8px 16px;border-radius:8px;background:#EEF2F8;width:100%;box-sizing:border-box">
+      <div style="font-size:12px;color:#888;font-family:'TH Niramit AS',sans-serif">ยินดีต้อนรับ</div>
+      <div id="ovName" style="font-size:14px;font-weight:700;color:#1B2E5C;font-family:'TH Niramit AS',sans-serif"></div>
+    </div>
+    <div id="ovBar" style="opacity:0;transition:opacity 0.3s ease 1s;width:100%;display:flex;flex-direction:column;gap:6px">
+      <div style="width:100%;height:3px;background:#E8EDF5;border-radius:99px;overflow:hidden">
+        <div id="ovProgress" style="height:100%;width:0%;background:#27AE60;border-radius:99px"></div>
+      </div>
+      <div style="font-size:11px;color:#999;font-family:'TH Niramit AS',sans-serif">กำลังเข้าสู่ระบบ...</div>
+    </div>
   </div>
 </div>
-<style>
-@keyframes popIn{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
-@keyframes spin{to{transform:rotate(360deg)}}
-</style>
 
 </body>
 </html>
