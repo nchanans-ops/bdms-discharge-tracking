@@ -1271,3 +1271,16 @@ function sl(s){return{pending:'Pending',active:'Active',completed:'Done'}[s]||s}
 
 function render(){rList();rCnt();if(sel)rDet();}
 
+document.addEventListener('DOMContentLoaded',()=>{
+  // auth check
+  const role=sessionStorage.getItem('bhu_role')||localStorage.getItem('bhu_role');
+  if(!role){window.location.href='login.html';return;}
+  // show admin button if admin
+  if(role==='admin'){const btn=document.getElementById('btnAdminPanel');if(btn)btn.style.display='';}
+  // start loading
+  ld();
+  render();
+  // clock
+  function tick(){const d=new Date();const el=document.getElementById('clk');if(el)el.textContent=d.toLocaleDateString('th-TH',{weekday:'short',day:'numeric',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+  tick();setInterval(tick,1000);
+});
