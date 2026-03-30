@@ -1193,6 +1193,9 @@ function openSettings(){
 function doLogout(){
   if(!confirm('ต้องการออกจากระบบใช่หรือไม่?'))return;
   sessionStorage.clear();
+  localStorage.removeItem('bhu_role');
+  localStorage.removeItem('bhu_user');
+  localStorage.removeItem('bhu_uid');
   window.location.href='login.html';
 }
 function ld(){
