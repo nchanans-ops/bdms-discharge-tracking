@@ -1278,25 +1278,16 @@ function prg(p){let t=0,d=0;p.checklist.forEach(s=>{t+=s.items.length;d+=s.items
 function sp(s){const t=s.items.length,d=s.items.filter(i=>i.ck).length;return{t,d,dn:t===d}}
 function sl(s){return{pending:'Pending',active:'Active',completed:'Done',overdue:'Overdue'}[s]||s}
 
-function render(){rList();rCnt();if(sel)rDet();checkOverdue();}
+function render(){rList();rCnt();if(sel)rDet();updOverdueBadge();}
 
-function checkOverdue(){
-  let changed=false;
-  pts.forEach(p=>{
-    if(p.status!=='completed'&&p.dischargeDate&&new Date(p.dischargeDate)<new Date()){
-      if(p.status!=='overdue'){p.status='overdue';p.updatedAt=new Date().toISOString();changed=true;}
-    }
-  });
-  if(changed)sv();
-  // Update top-bar overdue badge
+// checkOverdue อัตโนมัติถูกปิดแล้ว — admin ต้องกด Set Overdue เองจาก detail panel
+function updOverdueBadge(){
   const cnt=pts.filter(p=>p.status==='overdue').length;
   let badge=document.getElementById('overdueB');
   if(!badge){
-    const btn=document.querySelector('.top-r .tb');
     badge=document.createElement('span');
     badge.id='overdueB';
     badge.style.cssText='position:absolute;top:-4px;right:-4px;background:#C41E2F;color:#fff;font-size:10px;font-weight:800;border-radius:10px;padding:1px 5px;min-width:16px;text-align:center;display:none';
-    // attach to bell button
     const bellBtn=document.querySelector('[title="ประวัติการแจ้งเตือน"]');
     if(bellBtn){bellBtn.style.position='relative';bellBtn.appendChild(badge);}
   }
@@ -1368,7 +1359,9 @@ function rDet(){
       </div>`).join('');
     return`<div class="cl-s" id="s-${s.id}"><div class="cl-sh" onclick="togS(this)"><div class="cl-sl"><div class="cl-n ${nc}">${s.id}</div><div><div class="cl-st">${esc(s.th)}</div><div class="cl-se">${esc(s.t)}</div></div></div><div class="cl-sr"><span class="cl-sc ${cc}">${s2.d}/${s2.t}</span><svg class="cl-ar ${openSecs.has('s-'+s.id)?'op':''}" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="cl-bd ${openSecs.has('s-'+s.id)?'op':''}">${items}</div></div>`
   }).join('');
-  mp.innerHTML=`<div class="dh"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div class="dh-nm">${esc(p.name)}</div></div><div class="dh-grid"><div class="dh-it"><div class="dh-lb">HN</div><div class="dh-vl">${esc(p.hn)}</div></div><div class="dh-it"><div class="dh-lb">Ward/Room</div><div class="dh-vl">${esc(p.ward)} ${esc(p.room)}</div></div><div class="dh-it"><div class="dh-lb">Physician</div><div class="dh-vl">${esc(p.doctor||'-')}</div></div><div class="dh-it"><div class="dh-lb">Discharge</div><div class="dh-vl">${fd(p.dischargeDate)}</div></div><div class="dh-it"><div class="dh-lb">Status</div><div class="dh-vl"><span class="pc-st st-${p.status[0]}">${sl(p.status)}</span></div></div><div class="dh-it" style="display:flex;align-items:flex-end"><button class="b b-g" style="font-size:13px;padding:6px 16px" onclick="manualNtf()">แจ้งภาพรวม</button></div></div></div><div class="pstrip"><div class="ps-bar">${segs}</div><div class="ps-info"><span>Step 1</span><span>${pr.d}/${pr.t} (${pr.pct}%)</span><span>Step 10</span></div></div><div class="cl-scroll">${secs}</div><div class="bbar"><div class="bbar-l"><div class="btn-grp"><button class="b b-o b-s" onclick="openModal('expM')">Export</button><button class="b b-o b-s" onclick="printSummary('${p.id}')">Print</button></div></div><div class="bbar-r"><button class="b b-1 b-s" onclick="openEditModal('${p.id}')">Edit</button><button class="b b-2 b-s" onclick="cfmDel()">Delete</button><button class="b b-g b-s" onclick="compAll()">Complete Discharge</button></div></div>`;
+  const isAdmin=sessionStorage.getItem('bhu_role')==='admin'||localStorage.getItem('bhu_role')==='admin';
+  const adminBtns=isAdmin?`<button class="b b-s" style="background:#C41E2F;color:#fff;border:0" onclick="setOverdue('${p.id}')" title="ตั้ง Overdue">⚠ Overdue</button><button class="b b-o b-s" onclick="resetStatus('${p.id}')" title="รีเซ็ต">↺ Reset</button>`:'';
+  mp.innerHTML=`<div class="dh"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div class="dh-nm">${esc(p.name)}</div></div><div class="dh-grid"><div class="dh-it"><div class="dh-lb">HN</div><div class="dh-vl">${esc(p.hn)}</div></div><div class="dh-it"><div class="dh-lb">Ward/Room</div><div class="dh-vl">${esc(p.ward)} ${esc(p.room)}</div></div><div class="dh-it"><div class="dh-lb">Physician</div><div class="dh-vl">${esc(p.doctor||'-')}</div></div><div class="dh-it"><div class="dh-lb">Discharge</div><div class="dh-vl">${fd(p.dischargeDate)}</div></div><div class="dh-it"><div class="dh-lb">Status</div><div class="dh-vl"><span class="pc-st st-${p.status[0]}">${sl(p.status)}</span></div></div><div class="dh-it" style="display:flex;align-items:flex-end"><button class="b b-g" style="font-size:13px;padding:6px 16px" onclick="manualNtf()">แจ้งภาพรวม</button></div></div></div><div class="pstrip"><div class="ps-bar">${segs}</div><div class="ps-info"><span>Step 1</span><span>${pr.d}/${pr.t} (${pr.pct}%)</span><span>Step 10</span></div></div><div class="cl-scroll">${secs}</div><div class="bbar"><div class="bbar-l"><div class="btn-grp"><button class="b b-o b-s" onclick="openModal('expM')">Export</button><button class="b b-o b-s" onclick="printSummary('${p.id}')">Print</button></div></div><div class="bbar-r">${adminBtns}<button class="b b-1 b-s" onclick="openEditModal('${p.id}')">Edit</button><button class="b b-2 b-s" onclick="cfmDel()">Delete</button><button class="b b-g b-s" onclick="compAll()">Complete Discharge</button></div></div>`;
   if(mp&&_st)requestAnimationFrame(()=>{mp.scrollTop=_st;});
 }
 
@@ -1486,7 +1479,7 @@ function togI(pid,sid,iid){
     else{const sc=secEl.querySelector('.cl-sc');if(sc)sc.classList.remove('ad');}
   }
   // update progress bar
-  rList();rCnt();checkOverdue();
+  rList();rCnt();updOverdueBadge();
   // ส่ง LINE เฉพาะเมื่อ section นี้ครบทุก item (ไม่ใช่ uncheck)
   const sec=sp(s);
   if(i.ck && sec.dn){
@@ -1617,6 +1610,22 @@ function saveEdit(){
 }
 
 function compAll(){
+
+function setOverdue(pid){
+  const p=pts.find(x=>x.id===pid);if(!p)return;
+  if(p.status==='completed'){toast('ไม่สามารถตั้งได้','ผู้ป่วยที่ Completed แล้วไม่สามารถตั้ง Overdue ได้','e');return;}
+  p.status='overdue';p.updatedAt=new Date().toISOString();
+  sv();render();toast('ตั้ง Overdue แล้ว',p.name,'w');
+}
+
+function resetStatus(pid){
+  const p=pts.find(x=>x.id===pid);if(!p)return;
+  const pr=prg(p);
+  const newStatus=pr.d===0?'pending':pr.d===pr.t?'completed':'active';
+  p.status=newStatus;p.updatedAt=new Date().toISOString();
+  sv();render();toast('รีเซ็ต Status แล้ว',p.name+' → '+newStatus);
+}
+
   if(!sel)return;const p=pts.find(x=>x.id===sel);if(!p)return;
   p.status='completed';p.updatedAt=new Date().toISOString();
   p.checklist.forEach(s=>s.items.forEach(i=>{if(!i.ck){i.ck=true;i.at=new Date().toISOString()}}));
