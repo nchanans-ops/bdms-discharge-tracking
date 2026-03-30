@@ -1213,16 +1213,17 @@ function ld(){
     onValue(ref(db,'bhu/patients'), snap=>{
       try{
         const data = snap.val();
+        console.log('[BHU] Firebase patients snap:', data ? Object.keys(data).length + ' records' : 'NULL');
         if(data && typeof data === 'object' && Object.keys(data).length > 0){
           pts=Object.values(data);
           pts.forEach(p=>{if(p.status==='overdue')p.status='pending';});
           localStorage.setItem('d4_p2',JSON.stringify(pts));
           if(!_saving) render();
         } else {
-          // Firebase ว่างจริงๆ (ไม่มีข้อมูลเลย) - ใช้ demo เฉพาะครั้งแรก ไม่ seed ขึ้น Firebase
+          console.warn('[BHU] Firebase patients empty — using cache/demo');
           if(!pts.length) { demo(); render(); }
         }
-      }catch(e){console.warn('patients listener',e);}
+      }catch(e){console.error('[BHU] patients listener error:',e);}
     });
     // config realtime
     onValue(ref(db,'bhu/config'), snap=>{
@@ -1783,11 +1784,12 @@ function closeMobPanel(){
 document.addEventListener('DOMContentLoaded',function(){
   // auth check
   const role=sessionStorage.getItem('bhu_role')||localStorage.getItem('bhu_role');
-  if(!role){window.location.href='login.html';return;}
+  console.log('[BHU] DOMContentLoaded, role=', role);
+  if(!role){console.warn('[BHU] No role → redirect login');window.location.href='login.html';return;}
   if(role==='admin'){const ap=document.getElementById('btnAdminPanel');if(ap)ap.style.display='inline-flex';}
   // init
   ldWards();ldLog();ldStaff();renderWardSelect();
-  ld(); // ld() จะเรียก render() เองหลัง Firebase โหลด
+  ld();
   clock();setInterval(clock,1e3);
   setInterval(()=>{render();},60e3);
 });
