@@ -490,7 +490,7 @@ tbody tr:hover td{background:#f5f7fb}
         </div>
         <div class="tcard-search">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="searchInput" placeholder="ค้นหาชื่อ, username, ward..." oninput="renderUsers()" autocomplete="off">
+          <input type="text" id="searchInput" placeholder="ค้นหาชื่อ, username, ward..." oninput="renderUsers()" autocomplete="new-password" name="search_no_auto">
         </div>
         <table>
           <thead>
@@ -1020,7 +1020,8 @@ function toast(msg,type=''){
 document.addEventListener("DOMContentLoaded",function(){
   // Clear search on load (prevent browser autocomplete retention)
   const si=document.getElementById('searchInput');
-  if(si) si.value='';
+  if(si){ si.value=''; si.setAttribute('value',''); }
+  window.addEventListener('load',()=>{ if(si){ si.value=''; si.blur(); } });
   // Setup Firebase realtime listeners
   function setupFbListeners(){
     if(!window._fb){ setTimeout(setupFbListeners,100); return; }
