@@ -1503,7 +1503,7 @@ function manualNtf(){
   pendingNtf={msg:(()=>{
     const now=new Date();
     const dt=now.toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'})+' '+now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})+' น.';
-    return `BANGKOK HOSPITAL UDON\nระบบ Discharge Tracking\n${'─'.repeat(9)}\nประเภท   : อัปเดตสถานะผู้รับบริการ\nวันเวลา  : ${dt}\n${'─'.repeat(9)}\nชื่อ-สกุล    : ${p.name}\nHN           : ${p.hn}\nWard/ห้อง    : ${p.ward} / ${p.room||'-'}\nแพทย์ผู้ดูแล  : ${p.doctor||'-'}\n${'─'.repeat(9)}\nความคืบหน้า : ${pr.pct}% (${pr.d}/${pr.t})\n${'─'.repeat(9)}`;
+    return `BANGKOK HOSPITAL UDON\nระบบ Discharge Tracking\n${'─'.repeat(9)}\nประเภท   : อัปเดตสถานะผู้รับบริการ\nวันเวลา  : ${dt}\n${'─'.repeat(9)}\nชื่อ-สกุล    : ${p.name}\nHN           : ${p.hn}\nWard/ห้อง    : ${p.ward} / ${p.room||'-'}\nแพทย์ผู้ดูแล  : ${p.doctor||'-'}\n${'─'.repeat(9)}\nความคืบหน้า : ${pr.pct}% (${pr.d}/${pr.t})\nกระบวนการที่กำลังดำเนินการ :\n${p.checklist.filter(s=>{const _s=sp(s);return _s.d>0&&!_s.dn;}).map(s=>'  '+s.id+': '+s.th).join('\n')||'  -'}\n${'─'.repeat(9)}`;
   })()};
   document.getElementById('ntfTxt').textContent=`แจ้งภาพรวมผู้รับบริการ: ${p.name}`;
   document.getElementById('ng1').checked=false;
