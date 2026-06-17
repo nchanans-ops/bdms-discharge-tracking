@@ -417,7 +417,7 @@ body{font-family:'Poppins','Kanit',sans-serif;background:#F0F2F7;color:var(--f6)
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C41E2F" stroke-width="2.2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
         </div>
         <div>
-          <div style="font-size:12px;font-weight:600;color:#1B2E5C;line-height:1.1">ลบข้อมูลผู้ป่วย</div>
+          <div style="font-size:12px;font-weight:600;color:#1B2E5C;line-height:1.1">ลบข้อมูลผู้รับบริการ</div>
           <div style="font-size:11px;color:#AEB5C2;font-weight:500">Remove Patient Record</div>
         </div>
       </div>
@@ -442,7 +442,7 @@ body{font-family:'Poppins','Kanit',sans-serif;background:#F0F2F7;color:var(--f6)
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C41E2F" stroke-width="2.2" stroke-linecap="round" style="flex-shrink:0;margin-top:2px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         <div>
           <div style="font-size:12px;font-weight:500;color:#C41E2F;line-height:1.2">การดำเนินการนี้ไม่สามารถยกเลิกได้</div>
-          <div style="font-size:11px;color:#9E1825;margin-top:2px;line-height:1.4">ข้อมูลผู้ป่วยและ checklist ทั้งหมดจะถูกลบออกจากระบบ</div>
+          <div style="font-size:11px;color:#9E1825;margin-top:2px;line-height:1.4">ข้อมูลผู้รับบริการและ checklist ทั้งหมดจะถูกลบออกจากระบบ</div>
         </div>
       </div>
     </div>
@@ -837,7 +837,7 @@ function renderDailySum(){
         if(!wardMap[p.ward])wardMap[p.ward]={active:0,pending:0};
         wardMap[p.ward][p.status]=(wardMap[p.ward][p.status]||0)+1;
       });
-      if(!Object.keys(wardMap).length)return'<div style="text-align:center;padding:16px;color:var(--f3);font-size:12px">ไม่มีผู้ป่วยที่ยังดูแลอยู่</div>';
+      if(!Object.keys(wardMap).length)return'<div style="text-align:center;padding:16px;color:var(--f3);font-size:12px">ไม่มีผู้รับบริการที่ยังดูแลอยู่</div>';
       return Object.entries(wardMap).map(([w,s])=>`
         <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border:1px solid #F0F2F5;border-radius:8px;margin-bottom:5px;background:#fff">
           <span style="font-size:13px;font-weight:500;color:#1B2E5C">${w}</span>
@@ -912,7 +912,7 @@ tr:nth-child(even) td{background:#FAFBFC}
     <div class="card"><div class="n" style="color:#1A7742">${done.length}</div><div class="l">จำหน่ายวันนี้</div></div>
   </div>
   ${allActive.length?`
-  <div class="sec">ผู้ป่วยที่ยังดูแลอยู่ (${allActive.length} ราย)</div>
+  <div class="sec">ผู้รับบริการที่ยังดูแลอยู่ (${allActive.length} ราย)</div>
   <table><thead><tr><th>ชื่อ-สกุล</th><th>HN</th><th>Ward/ห้อง</th><th>แพทย์</th><th>วันที่จำหน่าย</th><th>สถานะ</th><th>Progress</th></tr></thead>
   <tbody>${allActive.map(ptRow).join('')}</tbody></table>`:''}
   ${done.length?`
@@ -936,7 +936,7 @@ function renderDashboard(){
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
       <div style="background:#EBF0F7;border-radius:10px;padding:14px;text-align:center">
         <div style="font-size:28px;font-weight:600;color:#1B2E5C">${pts.length}</div>
-        <div style="font-size:11px;color:#7A8394;font-weight:600">ผู้ป่วยทั้งหมด</div>
+        <div style="font-size:11px;color:#7A8394;font-weight:600">ผู้รับบริการทั้งหมด</div>
       </div>
       <div style="background:#E3F3EB;border-radius:10px;padding:14px;text-align:center">
         <div style="font-size:28px;font-weight:600;color:#1A7742">${todayDone}</div>
@@ -1075,7 +1075,7 @@ body{font-family:'Poppins','Kanit',sans-serif;background:#e0e0e0;color:#1a1a1a;f
         <div class="addr">โรงพยาบาลกรุงเทพอุดร&nbsp;&nbsp;|&nbsp;&nbsp;Discharge Tracking System</div>
       </div>
       <div class="doc-info">
-        <div class="title">ใบสรุปการจำหน่ายผู้ป่วย</div>
+        <div class="title">ใบสรุปการจำหน่ายผู้รับบริการ</div>
         <div class="subtitle">PATIENT DISCHARGE SUMMARY</div>
       </div>
     </div>
@@ -1086,14 +1086,14 @@ body{font-family:'Poppins','Kanit',sans-serif;background:#e0e0e0;color:#1a1a1a;f
   </div>
 
   <!-- PATIENT INFO -->
-  <div class="sec-title">ข้อมูลผู้ป่วย — Patient Information</div>
+  <div class="sec-title">ข้อมูลผู้รับบริการ — Patient Information</div>
   <table class="info-table">
     <tr>
       <td class="lbl">ชื่อ-สกุล</td><td class="val">${esc(p.name)}</td>
-      <td class="lbl">เลขประจำตัวผู้ป่วย (HN)</td><td class="val" style="font-family:monospace;letter-spacing:1px">${esc(p.hn)}</td>
+      <td class="lbl">เลขประจำตัวผู้รับบริการ (HN)</td><td class="val" style="font-family:monospace;letter-spacing:1px">${esc(p.hn)}</td>
     </tr>
     <tr>
-      <td class="lbl">หอผู้ป่วย (Ward)</td><td class="val">${esc(p.ward)}</td>
+      <td class="lbl">หอผู้รับบริการ (Ward)</td><td class="val">${esc(p.ward)}</td>
       <td class="lbl">ห้อง / เตียง</td><td class="val">${esc(p.room)}</td>
     </tr>
     <tr>
@@ -1137,7 +1137,7 @@ body{font-family:'Poppins','Kanit',sans-serif;background:#e0e0e0;color:#1a1a1a;f
     <tr>
       <td><div class="sig-line"></div><div class="sig-lbl">ลงชื่อ ................................................</div><div class="sig-sub">พยาบาลผู้รับผิดชอบ / Nurse in Charge</div></td>
       <td><div class="sig-line"></div><div class="sig-lbl">ลงชื่อ ................................................</div><div class="sig-sub">แพทย์เจ้าของไข้ / Attending Physician</div></td>
-      <td><div class="sig-line"></div><div class="sig-lbl">ลงชื่อ ................................................</div><div class="sig-sub">หัวหน้าหอผู้ป่วย / Head Nurse</div></td>
+      <td><div class="sig-line"></div><div class="sig-lbl">ลงชื่อ ................................................</div><div class="sig-sub">หัวหน้าหอผู้รับบริการ / Head Nurse</div></td>
     </tr>
     <tr>
       <td style="padding-top:4px"><div class="sig-sub">วันที่ ................ เวลา ................</div></td>
@@ -1503,9 +1503,9 @@ function manualNtf(){
   pendingNtf={msg:(()=>{
     const now=new Date();
     const dt=now.toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'})+' '+now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})+' น.';
-    return `BANGKOK HOSPITAL UDON\nระบบ Discharge Tracking\n${'─'.repeat(9)}\nประเภท   : อัปเดตสถานะผู้ป่วย\nวันเวลา  : ${dt}\n${'─'.repeat(9)}\nชื่อ-สกุล    : ${p.name}\nHN           : ${p.hn}\nWard/ห้อง    : ${p.ward} / ${p.room||'-'}\nแพทย์ผู้ดูแล  : ${p.doctor||'-'}\n${'─'.repeat(9)}\nความคืบหน้า : ${pr.pct}% (${pr.d}/${pr.t})\n${'─'.repeat(9)}`;
+    return `BANGKOK HOSPITAL UDON\nระบบ Discharge Tracking\n${'─'.repeat(9)}\nประเภท   : อัปเดตสถานะผู้รับบริการ\nวันเวลา  : ${dt}\n${'─'.repeat(9)}\nชื่อ-สกุล    : ${p.name}\nHN           : ${p.hn}\nWard/ห้อง    : ${p.ward} / ${p.room||'-'}\nแพทย์ผู้ดูแล  : ${p.doctor||'-'}\n${'─'.repeat(9)}\nความคืบหน้า : ${pr.pct}% (${pr.d}/${pr.t})\n${'─'.repeat(9)}`;
   })()};
-  document.getElementById('ntfTxt').textContent=`แจ้งภาพรวมผู้ป่วย: ${p.name}`;
+  document.getElementById('ntfTxt').textContent=`แจ้งภาพรวมผู้รับบริการ: ${p.name}`;
   document.getElementById('ng1').checked=false;
   document.getElementById('ng2').checked=false;
   document.getElementById('ng3').checked=false;
