@@ -709,9 +709,9 @@ tbody tr:hover td{background:#f5f7fb}
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
                 ล้าง Login Log
               </button>
-              <button class="btn" style="background:#FEF0F0;color:var(--red);border:1px solid #F5C0C6;justify-content:flex-start;gap:10px" onclick="if(confirm('ล้างข้อมูลผู้ป่วยทั้งหมด?')){localStorage.removeItem('d4_p2');toast('ล้างข้อมูลผู้ป่วยแล้ว','err')}">
+              <button class="btn" style="background:#FEF0F0;color:var(--red);border:1px solid #F5C0C6;justify-content:flex-start;gap:10px" onclick="if(confirm('ล้างข้อมูลผู้รับบริการทั้งหมด?')){localStorage.removeItem('d4_p2');toast('ล้างข้อมูลผู้รับบริการแล้ว','err')}">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-                ล้างข้อมูลผู้ป่วยทั้งหมด
+                ล้างข้อมูลผู้รับบริการทั้งหมด
               </button>
             </div>
           </div>
@@ -842,7 +842,7 @@ tbody tr:hover td{background:#f5f7fb}
       </div>
       <div class="fg">
         <label>คำอธิบาย (ไม่บังคับ)</label>
-        <input type="text" id="fWardDesc" placeholder="เช่น หอผู้ป่วยอายุรกรรม ชั้น 10">
+        <input type="text" id="fWardDesc" placeholder="เช่น หอผู้รับบริการอายุรกรรม ชั้น 10">
       </div>
       <div class="fg-err" id="wardErr"></div>
     </div>
@@ -1107,10 +1107,10 @@ function copyTempPw(){
 let wards=JSON.parse(localStorage.getItem('bhu_wards')||'[]');
 if(!wards.length){
   wards=[
-    {id:'w1',name:'IPD-10A',desc:'หอผู้ป่วยอายุรกรรม ชั้น 10'},
-    {id:'w2',name:'IPD-7B',desc:'หอผู้ป่วยศัลยกรรม ชั้น 7'},
-    {id:'w3',name:'ICU-3',desc:'ห้องผู้ป่วยวิกฤต ชั้น 3'},
-    {id:'w4',name:'IPD-12A',desc:'หอผู้ป่วยสูติกรรม ชั้น 12'},
+    {id:'w1',name:'IPD-10A',desc:'หอผู้รับบริการอายุรกรรม ชั้น 10'},
+    {id:'w2',name:'IPD-7B',desc:'หอผู้รับบริการศัลยกรรม ชั้น 7'},
+    {id:'w3',name:'ICU-3',desc:'ห้องผู้รับบริการวิกฤต ชั้น 3'},
+    {id:'w4',name:'IPD-12A',desc:'หอผู้รับบริการสูติกรรม ชั้น 12'},
   ];svWard();
 }
 function svWard(){
